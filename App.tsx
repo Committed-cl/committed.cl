@@ -3,6 +3,25 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SectionContent } from './types';
 import { INITIAL_CONTENT, Icons, Logo } from './constants';
 import AdminPanel from './components/AdminPanel';
+import BlogList from './components/BlogList';
+import BlogPost from './components/BlogPost';
+import { articles } from 'virtual:blog-articles';
+
+type Route =
+  | { page: 'home' }
+  | { page: 'blog' }
+  | { page: 'article'; slug: string };
+
+function getRouteFromHash(): Route {
+  const hash = window.location.hash;
+  if (hash.startsWith('#blog/')) {
+    return { page: 'article', slug: hash.slice(6) };
+  }
+  if (hash === '#blog') {
+    return { page: 'blog' };
+  }
+  return { page: 'home' };
+}
 
 const App: React.FC = () => {
   const [content, setContent] = useState<SectionContent>(INITIAL_CONTENT);
@@ -10,7 +29,8 @@ const App: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  
+  const [route, setRoute] = useState<Route>(getRouteFromHash);
+
   const contactRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -25,7 +45,14 @@ const App: React.FC = () => {
 
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    const handleHashChange = () => setRoute(getRouteFromHash());
+    window.addEventListener('hashchange', handleHashChange);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('hashchange', handleHashChange);
+    };
   }, []);
 
   const handleSave = (newContent: SectionContent) => {
@@ -47,22 +74,53 @@ const App: React.FC = () => {
     contactRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const navigateTo = (hash: string) => {
+    window.location.hash = hash;
+  };
+
+  // Blog routes
+  if (route.page === 'blog') {
+    return (
+      <BlogList
+        articles={articles}
+        onArticleClick={(slug) => navigateTo(`blog/${slug}`)}
+        onHomeClick={() => navigateTo('home')}
+      />
+    );
+  }
+
+  if (route.page === 'article') {
+    const article = articles.find(a => a.slug === route.slug);
+    if (article) {
+      return (
+        <BlogPost
+          article={article}
+          onBackClick={() => navigateTo('blog')}
+          onHomeClick={() => navigateTo('home')}
+        />
+      );
+    }
+    navigateTo('blog');
+    return null;
+  }
+
   return (
     <div className="min-h-screen selection:bg-yellow-500/30">
       {/* Navigation */}
       <nav className={`fixed w-full z-40 transition-all duration-500 ${scrolled ? 'bg-black/95 backdrop-blur-md py-3 shadow-xl' : 'bg-transparent py-8'}`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
           <Logo className="h-8 lg:h-10 transition-all duration-500" />
-          
+
           <div className="hidden lg:flex gap-12 font-bold tracking-[0.2em] text-[10px] uppercase text-white/60">
             <a href="#home" className="hover:text-yellow-500 transition-colors">Inicio</a>
             <a href="#services" className="hover:text-yellow-500 transition-colors">Servicios</a>
             <a href="#about" className="hover:text-yellow-500 transition-colors">Propuesta</a>
+            <a href="#blog" className="hover:text-yellow-500 transition-colors">Blog</a>
             <a href="#contact" className="hover:text-yellow-500 transition-colors">Contacto</a>
           </div>
 
           <div className="flex items-center gap-6">
-            <button 
+            <button
               onClick={scrollToContact}
               className="px-8 py-3 bg-white text-black text-[10px] font-black uppercase tracking-widest hover:bg-yellow-500 transition-all"
             >
@@ -90,7 +148,7 @@ const App: React.FC = () => {
             {content.hero.subtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-6 animate-fade-in-up delay-200">
-            <button 
+            <button
               onClick={scrollToContact}
               className="px-14 py-6 bg-yellow-500 text-black font-black text-[11px] uppercase tracking-[0.3em] hover:bg-white transition-all shadow-2xl"
             >
@@ -115,7 +173,7 @@ const App: React.FC = () => {
               Enfoque en resultados: Aumentamos la productividad potenciando la forma en que los equipos se coordinan.
             </div>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-1">
             {content.services.map((service) => {
               const IconComp = (Icons as any)[service.icon] || Icons.Home;
@@ -160,7 +218,7 @@ const App: React.FC = () => {
           <h3 className="text-4xl md:text-6xl font-black text-black mb-12 max-w-4xl mx-auto leading-tight">
             {content.contact.ctaTitle}
           </h3>
-          <button 
+          <button
             onClick={scrollToContact}
             className="px-16 py-8 bg-black text-white font-black text-xs uppercase tracking-[0.4em] hover:scale-105 transition-transform"
           >
@@ -172,10 +230,10 @@ const App: React.FC = () => {
       {/* Contact Section */}
       <section id="contact" ref={contactRef} className="py-40 bg-black text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-zinc-900/30 -skew-x-12 translate-x-1/2"></div>
-        
+
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-24 items-start">
-            
+
             <div className="space-y-16">
               <div>
                 <span className="text-yellow-500 font-black uppercase tracking-[0.4em] text-[10px] mb-6 block">Contacto Directo</span>
@@ -195,7 +253,7 @@ const App: React.FC = () => {
                     <p className="text-white font-medium text-lg">{content.contact.address}</p>
                   </div>
                 </div>
-                
+
                 <div className="group flex items-start gap-6">
                   <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-yellow-500 group-hover:text-black transition-all">
                     <Icons.Mail className="w-5 h-5" />
@@ -210,7 +268,7 @@ const App: React.FC = () => {
 
             <div className="bg-white p-12 lg:p-16 shadow-2xl relative">
               <div className="absolute -top-4 -left-4 w-24 h-24 border-t-4 border-l-4 border-yellow-500"></div>
-              
+
               {isSuccess ? (
                 <div className="h-[500px] flex flex-col items-center justify-center text-center space-y-6 animate-fade-in-up">
                   <div className="w-20 h-20 bg-green-500 text-white rounded-full flex items-center justify-center">
@@ -232,7 +290,7 @@ const App: React.FC = () => {
                       <input required type="email" className="w-full py-4 border-b-2 border-slate-100 focus:border-yellow-500 outline-none transition-all text-black font-medium" placeholder="email@corporativo.cl" />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Área de Interés</label>
                     <select className="w-full py-4 border-b-2 border-slate-100 focus:border-yellow-500 outline-none transition-all text-black font-medium bg-transparent">
@@ -248,7 +306,7 @@ const App: React.FC = () => {
                     <textarea required rows={4} className="w-full py-4 border-b-2 border-slate-100 focus:border-yellow-500 outline-none transition-all resize-none text-black font-medium" placeholder="Describa brevemente el alcance de la consultoría requerida..."></textarea>
                   </div>
 
-                  <button 
+                  <button
                     disabled={isSubmitting}
                     className="w-full py-8 bg-black text-white font-black uppercase tracking-[0.4em] text-[11px] hover:bg-yellow-500 hover:text-black transition-all disabled:opacity-50"
                   >
@@ -279,10 +337,10 @@ const App: React.FC = () => {
       </footer>
 
       {isAdminOpen && (
-        <AdminPanel 
-          content={content} 
-          onSave={handleSave} 
-          onClose={() => setIsAdminOpen(false)} 
+        <AdminPanel
+          content={content}
+          onSave={handleSave}
+          onClose={() => setIsAdminOpen(false)}
         />
       )}
     </div>
