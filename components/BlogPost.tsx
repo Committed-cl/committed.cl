@@ -69,7 +69,7 @@ const BlogPost: React.FC<BlogPostProps> = ({ article, onNavigate }) => {
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-yellow-500 text-[10px] font-black uppercase tracking-[0.3em]">{formatDate(article.date)}</span>
                 <span className="text-white/30">·</span>
-                <span className="text-white/50 text-[10px] font-bold uppercase tracking-[0.2em]">{article.author}</span>
+                <a href="https://www.linkedin.com/in/rodrigo-martinez-pinochet/" target="_blank" rel="noopener noreferrer" className="text-white/50 text-[10px] font-bold uppercase tracking-[0.2em] hover:text-yellow-500 transition-colors">{article.author}</a>
               </div>
               <h1 className="text-4xl md:text-6xl font-black text-white leading-tight">
                 {article.title}

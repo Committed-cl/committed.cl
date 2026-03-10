@@ -2,7 +2,7 @@
 title: "Productividad Organizacional: Más Allá de la Eficiencia"
 date: "2026-01-20"
 description: "La verdadera productividad no se mide solo en tareas completadas. Descubre un enfoque integral que transforma la manera en que tu organización genera valor."
-author: "Ricardo Martínez"
+author: "Rodrigo Martínez"
 image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=1200"
 tags: ["productividad", "organizacional", "gestión"]
 ---

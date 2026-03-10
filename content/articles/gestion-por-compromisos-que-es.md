@@ -2,7 +2,7 @@
 title: "¿Qué es la Gestión por Compromisos?"
 date: "2026-03-01"
 description: "Descubre cómo la Gestión por Compromisos transforma la coordinación de equipos y mejora la productividad organizacional."
-author: "Ricardo Martínez"
+author: "Rodrigo Martínez"
 image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200"
 tags: ["gestión", "compromisos", "productividad"]
 ---

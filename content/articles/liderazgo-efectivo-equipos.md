@@ -2,7 +2,7 @@
 title: "Liderazgo Efectivo: Cómo Movilizar Equipos hacia Resultados"
 date: "2026-02-15"
 description: "Exploramos las claves del liderazgo efectivo y cómo los líderes pueden transformar la dinámica de sus equipos para alcanzar resultados extraordinarios."
-author: "Ricardo Martínez"
+author: "Rodrigo Martínez"
 image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=1200"
 tags: ["liderazgo", "equipos", "coordinación"]
 ---
