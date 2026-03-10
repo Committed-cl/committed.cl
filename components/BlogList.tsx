@@ -13,8 +13,7 @@ interface ArticlePreview {
 
 interface BlogListProps {
   articles: ArticlePreview[];
-  onArticleClick: (slug: string) => void;
-  onHomeClick: () => void;
+  onNavigate: (path: string, e?: React.MouseEvent) => void;
 }
 
 function formatDate(dateStr: string): string {
@@ -22,17 +21,17 @@ function formatDate(dateStr: string): string {
   return date.toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-const BlogList: React.FC<BlogListProps> = ({ articles, onArticleClick, onHomeClick }) => {
+const BlogList: React.FC<BlogListProps> = ({ articles, onNavigate }) => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
       <nav className="bg-black py-6">
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <a onClick={onHomeClick} className="cursor-pointer">
+          <a href="/" onClick={(e) => onNavigate('/', e)} className="cursor-pointer">
             <Logo className="h-8 lg:h-10" />
           </a>
           <div className="hidden lg:flex gap-12 font-bold tracking-[0.2em] text-[10px] uppercase text-white/60">
-            <a onClick={onHomeClick} className="hover:text-yellow-500 transition-colors cursor-pointer">Inicio</a>
+            <a href="/" onClick={(e) => onNavigate('/', e)} className="hover:text-yellow-500 transition-colors cursor-pointer">Inicio</a>
             <span className="text-yellow-500">Blog</span>
           </div>
         </div>
@@ -56,37 +55,40 @@ const BlogList: React.FC<BlogListProps> = ({ articles, onArticleClick, onHomeCli
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {articles.map((article) => (
-              <article
+              <a
                 key={article.slug}
-                onClick={() => onArticleClick(article.slug)}
-                className="group cursor-pointer"
+                href={`/blog/${article.slug}`}
+                onClick={(e) => onNavigate(`/blog/${article.slug}`, e)}
+                className="group cursor-pointer block"
               >
-                <div className="aspect-[16/10] overflow-hidden mb-6">
-                  <img
-                    src={article.image}
-                    alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-4">
-                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-yellow-600">{formatDate(article.date)}</span>
+                <article>
+                  <div className="aspect-[16/10] overflow-hidden mb-6">
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
                   </div>
-                  <h2 className="text-xl font-bold text-black group-hover:text-yellow-600 transition-colors leading-tight">
-                    {article.title}
-                  </h2>
-                  <p className="text-slate-500 text-sm leading-relaxed line-clamp-3">
-                    {article.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    {article.tags.map((tag) => (
-                      <span key={tag} className="text-[9px] font-bold uppercase tracking-widest text-slate-400 bg-slate-100 px-3 py-1">
-                        {tag}
-                      </span>
-                    ))}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-4">
+                      <span className="text-[9px] font-black uppercase tracking-[0.2em] text-yellow-600">{formatDate(article.date)}</span>
+                    </div>
+                    <h2 className="text-xl font-bold text-black group-hover:text-yellow-600 transition-colors leading-tight">
+                      {article.title}
+                    </h2>
+                    <p className="text-slate-500 text-sm leading-relaxed line-clamp-3">
+                      {article.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {article.tags.map((tag) => (
+                        <span key={tag} className="text-[9px] font-bold uppercase tracking-widest text-slate-400 bg-slate-100 px-3 py-1">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </article>
+                </article>
+              </a>
             ))}
           </div>
         </div>
@@ -96,7 +98,7 @@ const BlogList: React.FC<BlogListProps> = ({ articles, onArticleClick, onHomeCli
       <footer className="bg-black py-24 border-t border-white/5">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-12 mb-20">
-            <a onClick={onHomeClick} className="cursor-pointer">
+            <a href="/" onClick={(e) => onNavigate('/', e)} className="cursor-pointer">
               <Logo className="h-8" />
             </a>
             <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">

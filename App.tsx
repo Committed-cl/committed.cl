@@ -12,15 +12,22 @@ type Route =
   | { page: 'blog' }
   | { page: 'article'; slug: string };
 
-function getRouteFromHash(): Route {
-  const hash = window.location.hash;
-  if (hash.startsWith('#blog/')) {
-    return { page: 'article', slug: hash.slice(6) };
+function getRouteFromPath(): Route {
+  const path = window.location.pathname;
+  const blogArticleMatch = path.match(/^\/blog\/(.+?)(?:\/)?$/);
+  if (blogArticleMatch) {
+    return { page: 'article', slug: blogArticleMatch[1] };
   }
-  if (hash === '#blog') {
+  if (path === '/blog' || path === '/blog/') {
     return { page: 'blog' };
   }
   return { page: 'home' };
+}
+
+function navigateTo(path: string, e?: React.MouseEvent) {
+  if (e) e.preventDefault();
+  window.history.pushState(null, '', path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
 }
 
 const App: React.FC = () => {
@@ -29,7 +36,7 @@ const App: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [route, setRoute] = useState<Route>(getRouteFromHash);
+  const [route, setRoute] = useState<Route>(getRouteFromPath);
 
   const contactRef = useRef<HTMLElement>(null);
 
@@ -46,12 +53,12 @@ const App: React.FC = () => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
 
-    const handleHashChange = () => setRoute(getRouteFromHash());
-    window.addEventListener('hashchange', handleHashChange);
+    const handlePopState = () => setRoute(getRouteFromPath());
+    window.addEventListener('popstate', handlePopState);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handlePopState);
     };
   }, []);
 
@@ -71,11 +78,14 @@ const App: React.FC = () => {
   };
 
   const scrollToContact = () => {
+    if (route.page !== 'home') {
+      navigateTo('/');
+      setTimeout(() => {
+        document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      return;
+    }
     contactRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const navigateTo = (hash: string) => {
-    window.location.hash = hash;
   };
 
   // Blog routes
@@ -83,8 +93,7 @@ const App: React.FC = () => {
     return (
       <BlogList
         articles={articles}
-        onArticleClick={(slug) => navigateTo(`blog/${slug}`)}
-        onHomeClick={() => navigateTo('home')}
+        onNavigate={navigateTo}
       />
     );
   }
@@ -95,12 +104,11 @@ const App: React.FC = () => {
       return (
         <BlogPost
           article={article}
-          onBackClick={() => navigateTo('blog')}
-          onHomeClick={() => navigateTo('home')}
+          onNavigate={navigateTo}
         />
       );
     }
-    navigateTo('blog');
+    navigateTo('/blog');
     return null;
   }
 
@@ -115,7 +123,7 @@ const App: React.FC = () => {
             <a href="#home" className="hover:text-yellow-500 transition-colors">Inicio</a>
             <a href="#services" className="hover:text-yellow-500 transition-colors">Servicios</a>
             <a href="#about" className="hover:text-yellow-500 transition-colors">Propuesta</a>
-            <a href="#blog" className="hover:text-yellow-500 transition-colors">Blog</a>
+            <a href="/blog" onClick={(e) => navigateTo('/blog', e)} className="hover:text-yellow-500 transition-colors">Blog</a>
             <a href="#contact" className="hover:text-yellow-500 transition-colors">Contacto</a>
           </div>
 

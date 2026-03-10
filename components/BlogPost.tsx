@@ -14,8 +14,7 @@ interface Article {
 
 interface BlogPostProps {
   article: Article;
-  onBackClick: () => void;
-  onHomeClick: () => void;
+  onNavigate: (path: string, e?: React.MouseEvent) => void;
 }
 
 function formatDate(dateStr: string): string {
@@ -23,7 +22,7 @@ function formatDate(dateStr: string): string {
   return date.toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-const BlogPost: React.FC<BlogPostProps> = ({ article, onBackClick, onHomeClick }) => {
+const BlogPost: React.FC<BlogPostProps> = ({ article, onNavigate }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
     document.title = `${article.title} | Committed`;
@@ -46,12 +45,12 @@ const BlogPost: React.FC<BlogPostProps> = ({ article, onBackClick, onHomeClick }
       {/* Header */}
       <nav className="bg-black py-6">
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <a onClick={onHomeClick} className="cursor-pointer">
+          <a href="/" onClick={(e) => onNavigate('/', e)} className="cursor-pointer">
             <Logo className="h-8 lg:h-10" />
           </a>
           <div className="hidden lg:flex gap-12 font-bold tracking-[0.2em] text-[10px] uppercase text-white/60">
-            <a onClick={onHomeClick} className="hover:text-yellow-500 transition-colors cursor-pointer">Inicio</a>
-            <a onClick={onBackClick} className="hover:text-yellow-500 transition-colors cursor-pointer">Blog</a>
+            <a href="/" onClick={(e) => onNavigate('/', e)} className="hover:text-yellow-500 transition-colors cursor-pointer">Inicio</a>
+            <a href="/blog" onClick={(e) => onNavigate('/blog', e)} className="hover:text-yellow-500 transition-colors cursor-pointer">Blog</a>
           </div>
         </div>
       </nav>
@@ -93,26 +92,19 @@ const BlogPost: React.FC<BlogPostProps> = ({ article, onBackClick, onHomeClick }
             </div>
 
             <div
-              className="prose prose-lg max-w-none
-                prose-headings:font-black prose-headings:tracking-tight prose-headings:text-black
-                prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-6
-                prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-4
-                prose-p:text-slate-600 prose-p:leading-relaxed prose-p:font-light
-                prose-strong:text-black prose-strong:font-bold
-                prose-ul:text-slate-600 prose-ol:text-slate-600
-                prose-li:leading-relaxed prose-li:font-light
-                prose-a:text-yellow-600 prose-a:no-underline hover:prose-a:underline"
+              className="prose prose-lg max-w-none"
               dangerouslySetInnerHTML={{ __html: article.html }}
             />
 
             <div className="mt-20 pt-12 border-t border-slate-100">
-              <button
-                onClick={onBackClick}
+              <a
+                href="/blog"
+                onClick={(e) => onNavigate('/blog', e)}
                 className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-black hover:text-yellow-600 transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                 Volver al Blog
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -122,7 +114,7 @@ const BlogPost: React.FC<BlogPostProps> = ({ article, onBackClick, onHomeClick }
       <footer className="bg-black py-24 border-t border-white/5">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-12 mb-20">
-            <a onClick={onHomeClick} className="cursor-pointer">
+            <a href="/" onClick={(e) => onNavigate('/', e)} className="cursor-pointer">
               <Logo className="h-8" />
             </a>
             <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
