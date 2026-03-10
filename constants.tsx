@@ -49,15 +49,12 @@ export const INITIAL_CONTENT: SectionContent = {
 };
 
 export const Logo = ({ className = "h-12", variant = "small" }: { className?: string; variant?: "small" | "large" }) => (
-  <div className={`flex ${variant === "large" ? "flex-col items-center gap-1" : "items-center gap-2"} ${className} transition-all duration-500`}>
-    <div className={`${variant === "large" ? "h-3/4" : "h-full"} aspect-square overflow-hidden flex-shrink-0`}>
-      <img
-        src="/logo-committed.png"
-        alt="Committed Logo"
-        className="h-[145%] w-auto object-contain object-top"
-      />
-    </div>
-    <span className={`text-white font-bold tracking-wider leading-none whitespace-nowrap ${variant === "large" ? "text-[0.35em]" : "text-[0.6em]"}`}>COMMITTED</span>
+  <div className={`flex items-center ${className} transition-all duration-500`}>
+    <img
+      src={variant === "large" ? "/logo-vertical.png" : "/logo-horizontal.png"}
+      alt="Committed Logo"
+      className="h-full w-auto object-contain"
+    />
   </div>
 );
 
