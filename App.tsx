@@ -117,7 +117,7 @@ const App: React.FC = () => {
       {/* Navigation */}
       <nav className={`fixed w-full z-40 transition-all duration-500 ${scrolled ? 'bg-black/95 backdrop-blur-md py-3 shadow-xl' : 'bg-transparent py-8'}`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <Logo className="h-8 lg:h-10 transition-all duration-500" />
+          <Logo className={`transition-all duration-500 ${scrolled ? 'h-8 lg:h-10' : 'h-14 lg:h-16'}`} variant={scrolled ? "small" : "large"} />
 
           <div className="hidden lg:flex gap-12 font-bold tracking-[0.2em] text-[10px] uppercase text-white/60">
             <a href="#home" className="hover:text-yellow-500 transition-colors">Inicio</a>
