@@ -49,12 +49,15 @@ export const INITIAL_CONTENT: SectionContent = {
 };
 
 export const Logo = ({ className = "h-12" }: { className?: string }) => (
-  <div className={`flex items-center ${className}`}>
-    <img 
-      src="https://committed.cl/static/wp-content/uploads/2017/05/LOGO_COMMITTED.png" 
-      alt="Committed Logo" 
-      className="h-full w-auto object-contain brightness-0 invert" 
-    />
+  <div className={`flex items-center gap-2 ${className}`}>
+    <div className="h-full aspect-square overflow-hidden flex-shrink-0">
+      <img
+        src="/logo-committed.png"
+        alt="Committed Logo"
+        className="h-[145%] w-auto object-contain object-top"
+      />
+    </div>
+    <span className="text-white font-bold tracking-wider text-[0.6em] leading-none whitespace-nowrap">COMMITTED</span>
   </div>
 );
 
